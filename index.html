@@ -49,10 +49,19 @@
         .control-group { text-align: left; }
         .label-header { display: flex; justify-content: space-between; margin-bottom: 0.4rem; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; opacity: 0.7; }
 
+        /* Correction lisibilité menus */
         select {
-            width: 100%; padding: 10px; border-radius: 12px;
-            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
-            color: white; font-size: 0.9rem; outline: none;
+            width: 100%; padding: 12px; border-radius: 12px;
+            background: #2d3748; /* Fond plus sombre pour contraste */
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white; font-size: 1rem; outline: none;
+            appearance: none;
+        }
+        
+        /* Correction spécifique pour le blanc sur blanc dans les menus déroulants */
+        select option {
+            background-color: #1e293b; 
+            color: white;
         }
 
         input[type=range] { width: 100%; height: 6px; border-radius: 10px; appearance: none; background: rgba(255,255,255,0.1); outline: none; }
@@ -60,7 +69,6 @@
 
         #timerDisplay { font-size: 1.2rem; font-weight: bold; color: var(--accent); margin: 0.5rem 0; min-height: 1.5rem; }
 
-        /* Animation des vagues */
         .wave-animation-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             overflow: hidden; display: flex; align-items: center; justify-content: center;
@@ -113,8 +121,8 @@
             </div>
 
             <div class="control-group">
-                <div class="label-header"><span>Volume</span><span id="volPerc">30%</span></div>
-                <input type="range" id="volume" min="0" max="1" step="0.01" value="0.3">
+                <div class="label-header"><span>Volume</span><span id="volPerc">100%</span></div>
+                <input type="range" id="volume" min="0" max="1" step="0.01" value="1.0">
             </div>
         </div>
     </div>
@@ -156,10 +164,11 @@
             let lp0 = 0, lp1 = 0;
             for (let i = 0; i < bufferSize; i++) {
                 const white = Math.random() * 2 - 1;
-                lp0 = 0.99 * lp0 + 0.01 * white;
-                lp1 = 0.99 * lp1 + 0.01 * lp0;
-                const lfo = Math.sin(i * 0.00004) * 0.2 + 0.8; 
-                data[i] = lp1 * lfo * 0.5;
+                // Ajustement du filtre pour plus de présence (0.04 au lieu de 0.01)
+                lp0 = 0.96 * lp0 + 0.04 * white;
+                lp1 = 0.96 * lp1 + 0.04 * lp0;
+                const lfo = Math.sin(i * 0.00004) * 0.15 + 0.85; 
+                data[i] = lp1 * lfo * 1.5; // Gain boosté
             }
             return buffer;
         }
@@ -175,9 +184,7 @@
             timerInterval = setInterval(() => {
                 timeLeft--;
                 updateTimerDisplay();
-                if (timeLeft <= 0) {
-                    stopWithFade();
-                }
+                if (timeLeft <= 0) stopWithFade();
             }, 1000);
         }
 
