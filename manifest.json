@@ -1,16 +1,17 @@
 {
-  "name": "Pink Noise Pro",
-  "short_name": "PinkNoise",
-  "description": "Générateur de bruit rose pour le sommeil.",
-  "start_url": "pink_noise.html",
+  "name": "Sleepy Bobby",
+  "short_name": "Bobby",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
+  "description": "Bobby murmure pour t'aider à dormir",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/3659/3659898.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/528/528076.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
