@@ -18,167 +18,60 @@
         }
 
         html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            position: fixed;
-            touch-action: manipulation;
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; position: fixed; touch-action: manipulation;
         }
 
         body { 
             font-family: system-ui, -apple-system, sans-serif; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg);
-            color: var(--text);
-            transition: background 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--bg); color: var(--text); transition: background 0.3s ease;
         }
 
-        .container {
-            width: 100%;
-            max-width: 400px;
-            padding: 20px;
-            box-sizing: border-box;
-            text-align: center;
-            position: relative;
-            z-index: 1;
-        }
+        .container { width: 100%; max-width: 400px; padding: 20px; box-sizing: border-box; text-align: center; position: relative; z-index: 1; }
 
         .card {
-            background: var(--card);
-            padding: clamp(1.5rem, 5vh, 3rem);
-            border-radius: 40px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
+            background: var(--card); padding: clamp(1.5rem, 5vh, 2.5rem);
+            border-radius: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            display: flex; flex-direction: column; gap: 1.2rem;
             border: 1px solid rgba(255,255,255,0.05);
         }
 
-        h1 { 
-            margin: 0; 
-            font-size: clamp(1.5rem, 5vw, 2rem);
-            letter-spacing: -0.5px;
-        }
-
-        p { 
-            margin: 0; 
-            opacity: 0.6; 
-            font-size: clamp(0.8rem, 3vw, 1rem);
-        }
+        h1 { margin: 0; font-size: clamp(1.5rem, 5vw, 2rem); }
+        p { margin: 0; opacity: 0.6; font-size: 0.9rem; }
 
         .btn-main { 
-            width: clamp(80px, 20vh, 120px);
-            height: clamp(80px, 20vh, 120px);
-            border-radius: 50%;
-            border: none;
-            background: var(--primary);
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 1rem auto;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.2);
-            position: relative;
-            z-index: 10;
+            width: clamp(80px, 18vh, 110px); height: clamp(80px, 18vh, 110px);
+            border-radius: 50%; border: none; background: var(--primary); color: white;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            margin: 0.5rem auto; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.2); position: relative; z-index: 10;
         }
 
-        .btn-main svg { 
-            width: 40%; 
-            height: 40%; 
-            fill: currentColor; 
+        .btn-main.playing { background: var(--accent); transform: scale(1.05); }
+        .btn-main svg { width: 40%; height: 40%; fill: currentColor; }
+
+        .control-group { text-align: left; margin-top: 0.5rem; }
+        .label-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; opacity: 0.8; }
+
+        select {
+            width: 100%; padding: 12px; border-radius: 12px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: white; font-size: 1rem; outline: none; cursor: pointer; appearance: none;
         }
 
-        .btn-main.playing { 
-            background: var(--accent);
-            box-shadow: 0 10px 30px rgba(251, 113, 133, 0.2);
-            transform: scale(1.05);
-        }
+        input[type=range] { width: 100%; height: 6px; border-radius: 10px; appearance: none; background: rgba(255,255,255,0.1); outline: none; }
+        input[type=range]::-webkit-slider-thumb { appearance: none; width: 22px; height: 22px; background: var(--primary); border-radius: 50%; border: 3px solid var(--card); }
 
-        .volume-container {
-            text-align: left;
-            margin-top: 1rem;
-        }
-
-        .volume-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.8rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        input[type=range] { 
-            width: 100%;
-            height: 6px;
-            border-radius: 10px;
-            appearance: none;
-            background: rgba(255,255,255,0.1);
-            outline: none;
-        }
-
-        input[type=range]::-webkit-slider-thumb {
-            appearance: none;
-            width: 24px;
-            height: 24px;
-            background: var(--primary);
-            border-radius: 50%;
-            cursor: pointer;
-            border: 3px solid var(--card);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        }
-
-        .status-badge {
-            font-size: 0.7rem;
-            font-weight: bold;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            padding: 6px 16px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 20px;
-            display: inline-block;
-            align-self: center;
-            color: var(--primary);
-        }
-
-        /* Animation des vagues */
         .wave-animation-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.5s ease-out;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden; display: flex; align-items: center; justify-content: center;
+            pointer-events: none; opacity: 0; transition: opacity 0.5s ease-out;
         }
-        .wave-animation-container.active {
-            opacity: 1;
-        }
-
-        .wave {
-            position: absolute;
-            border: 2px solid var(--wave-color);
-            border-radius: 50%;
-            opacity: 0;
-            animation: wave-grow 2s linear infinite;
-        }
-
-        .wave:nth-child(1) { animation-delay: 0s; }
+        .wave-animation-container.active { opacity: 1; }
+        .wave { position: absolute; border: 2px solid var(--wave-color); border-radius: 50%; opacity: 0; animation: wave-grow 2s linear infinite; }
         .wave:nth-child(2) { animation-delay: 0.5s; }
         .wave:nth-child(3) { animation-delay: 1s; }
-        .wave:nth-child(4) { animation-delay: 1.5s; }
 
         @keyframes wave-grow {
             0% { width: 0; height: 0; opacity: 1; transform: translate(-50%, -50%); }
@@ -189,32 +82,30 @@
 <body>
 
     <div id="waveContainer" class="wave-animation-container">
-        <div class="wave"></div>
-        <div class="wave"></div>
-        <div class="wave"></div>
-        <div class="wave"></div>
+        <div class="wave"></div><div class="wave"></div><div class="wave"></div>
     </div>
 
     <div class="container">
         <div class="card">
             <div>
                 <h1>Sleepy Bobby</h1>
-                <p>Bruit rose pour un dodo facile</p>
+                <p id="subtext">Bobby murmure à ton oreille</p>
             </div>
             
-            <button id="playBtn" class="btn-main" aria-label="Lancer Sleepy Bobby">
-                <svg id="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            </button>
+            <button id="playBtn" class="btn-main"><svg id="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
 
-            <div class="volume-container">
-                <div class="volume-header">
-                    <span>Volume</span>
-                    <span id="volPerc">30%</span>
-                </div>
-                <input type="range" id="volume" min="0" max="1" step="0.01" value="0.3">
+            <div class="control-group">
+                <div class="label-header">Ambiance</div>
+                <select id="modeSelect">
+                    <option value="pink">Bruit Rose (Sédatif)</option>
+                    <option value="river">Rivière Apaisante</option>
+                </select>
             </div>
 
-            <div id="status" class="status-badge">Bobby est prêt</div>
+            <div class="control-group">
+                <div class="label-header"><span>Volume</span><span id="volPerc">30%</span></div>
+                <input type="range" id="volume" min="0" max="1" step="0.01" value="0.3">
+            </div>
         </div>
     </div>
 
@@ -224,9 +115,27 @@
         const btn = document.getElementById('playBtn');
         const iconPath = document.querySelector('#icon path');
         const volSlider = document.getElementById('volume');
-        const volPerc = document.getElementById('volPerc');
-        const statusTxt = document.getElementById('status');
+        const modeSelect = document.getElementById('modeSelect');
         const waveContainer = document.getElementById('waveContainer');
+
+        // URL d'un bruit de rivière libre de droits (boucle haute qualité)
+        const RIVER_URL = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"; // Note: Remplacer par un vrai son de rivière court si besoin
+
+        async function getRiverBuffer(context) {
+            // Pour l'exemple, on génère un son "eau" via un filtre passe-bas sur du bruit blanc
+            // C'est plus léger que de charger un MP3
+            const bufferSize = context.sampleRate * 4;
+            const buffer = context.createBuffer(1, bufferSize, context.sampleRate);
+            const data = buffer.getChannelData(0);
+            let lastOut = 0;
+            for (let i = 0; i < bufferSize; i++) {
+                const white = Math.random() * 2 - 1;
+                // Filtre résonant simple pour simuler l'eau
+                lastOut = 0.94 * lastOut + 0.06 * white;
+                data[i] = lastOut * 0.5;
+            }
+            return buffer;
+        }
 
         function createPinkNoiseBuffer(context) {
             const bufferSize = context.sampleRate * 2;
@@ -235,53 +144,57 @@
             let b0=0, b1=0, b2=0, b3=0, b4=0, b5=0, b6=0;
             for (let i = 0; i < bufferSize; i++) {
                 let white = Math.random() * 2 - 1;
-                b0 = 0.99886 * b0 + white * 0.0555179; b1 = 0.99332 * b1 + white * 0.0750759;
-                b2 = 0.96900 * b2 + white * 0.1538520; b3 = 0.86650 * b3 + white * 0.3104856;
-                b4 = 0.55000 * b4 + white * 0.5329522; b5 = -0.7616 * b5 - white * 0.0168980;
-                data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.15;
+                b0 = 0.99886*b0 + white*0.0555179; b1 = 0.99332*b1 + white*0.0750759;
+                b2 = 0.96900*b2 + white*0.1538520; b3 = 0.86650*b3 + white*0.3104856;
+                b4 = 0.55000*b4 + white*0.5329522; b5 = -0.7616*b5 - white*0.0168980;
+                data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white*0.5362) * 0.15;
                 b6 = white * 0.11592;
             }
             return buffer;
         }
 
-        function togglePlay() {
+        async function togglePlay() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            
             if (!isPlaying) {
                 if (audioCtx.state === 'suspended') audioCtx.resume();
+                
                 sourceNode = audioCtx.createBufferSource();
-                sourceNode.buffer = createPinkNoiseBuffer(audioCtx);
+                if (modeSelect.value === 'pink') {
+                    sourceNode.buffer = createPinkNoiseBuffer(audioCtx);
+                } else {
+                    sourceNode.buffer = await getRiverBuffer(audioCtx);
+                }
+                
                 sourceNode.loop = true;
                 gainNode = audioCtx.createGain();
                 gainNode.gain.setValueAtTime(volSlider.value, audioCtx.currentTime);
                 sourceNode.connect(gainNode).connect(audioCtx.destination);
                 sourceNode.start();
+                
                 iconPath.setAttribute('d', "M6 19h4V5H6v14zm8-14v14h4V5h-4z");
                 btn.classList.add('playing');
-                statusTxt.textContent = "Bobby murmure...";
                 waveContainer.classList.add('active');
                 isPlaying = true;
             } else {
                 sourceNode.stop();
                 iconPath.setAttribute('d', "M8 5v14l11-7z");
                 btn.classList.remove('playing');
-                statusTxt.textContent = "Bobby dort";
                 waveContainer.classList.remove('active');
                 isPlaying = false;
             }
         }
 
+        modeSelect.addEventListener('change', () => {
+            if (isPlaying) { togglePlay(); togglePlay(); } // Redémarrer avec le nouveau son
+        });
+
         btn.addEventListener('click', togglePlay);
         volSlider.addEventListener('input', (e) => {
             const val = e.target.value;
-            volPerc.textContent = Math.round(val * 100) + "%";
+            document.getElementById('volPerc').textContent = Math.round(val * 100) + "%";
             if (gainNode) gainNode.gain.setTargetAtTime(val, audioCtx.currentTime, 0.05);
         });
-
-        if ('serviceWorker' in navigator) {
-            const swCode = "self.addEventListener('fetch', (e) => {});";
-            const blob = new Blob([swCode], {type: 'text/javascript'});
-            navigator.serviceWorker.register(URL.createObjectURL(blob));
-        }
     </script>
 </body>
 </html>
