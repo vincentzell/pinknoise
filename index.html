@@ -60,9 +60,8 @@
         select option { background-color: #1e293b; color: white; }
 
         input[type=range] { width: 100%; height: 6px; border-radius: 10px; appearance: none; background: rgba(255,255,255,0.1); outline: none; }
-        input[type=range]::-webkit-slider-thumb { appearance: none; width: 20px; height: 20px; background: var(--primary); border-radius: 50%; border: 3px solid var(--card); }
+        input[type=range]::-webkit-slider-thumb { appearance: none; width: 22px; height: 22px; background: var(--primary); border-radius: 50%; border: 3px solid var(--card); }
 
-        /* Animation des vagues */
         .wave-animation-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             overflow: hidden; display: flex; align-items: center; justify-content: center;
@@ -92,7 +91,9 @@
                 <p>Bobby murmure pour t'aider à dormir</p>
             </div>
             
-            <button id="playBtn" class="btn-main"><svg id="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+            <button id="playBtn" class="btn-main" aria-label="Jouer">
+                <svg id="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </button>
 
             <div class="control-group">
                 <div class="label-header">Ambiance</div>
@@ -132,6 +133,7 @@
         const timerSelect = document.getElementById('timerSelect');
         const waveContainer = document.getElementById('waveContainer');
 
+        // Égalisation : Bruit Rose (Densité réduite pour matcher la rivière)
         function createPinkNoiseBuffer(context) {
             const bufferSize = context.sampleRate * 2;
             const buffer = context.createBuffer(1, bufferSize, context.sampleRate);
@@ -142,12 +144,13 @@
                 b0 = 0.99886*b0 + white*0.0555179; b1 = 0.99332*b1 + white*0.0750759;
                 b2 = 0.96900*b2 + white*0.1538520; b3 = 0.86650*b3 + white*0.3104856;
                 b4 = 0.55000*b4 + white*0.5329522; b5 = -0.7616*b5 - white*0.0168980;
-                data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white*0.5362) * 0.15;
+                data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white*0.5362) * 0.12;
                 b6 = white * 0.11592;
             }
             return buffer;
         }
 
+        // Égalisation : Rivière (Gain boosté et filtre ajusté)
         function createRiverBuffer(context) {
             const bufferSize = context.sampleRate * 6;
             const buffer = context.createBuffer(1, bufferSize, context.sampleRate);
@@ -158,7 +161,7 @@
                 lp0 = 0.96 * lp0 + 0.04 * white;
                 lp1 = 0.96 * lp1 + 0.04 * lp0;
                 const lfo = Math.sin(i * 0.00004) * 0.15 + 0.85; 
-                data[i] = lp1 * lfo * 1.5;
+                data[i] = lp1 * lfo * 1.8;
             }
             return buffer;
         }
@@ -166,10 +169,8 @@
         function startTimer(minutes) {
             resetTimerLabels();
             if (minutes === 0) return;
-            
             timeLeft = minutes * 60;
             updateTimerInMenu();
-            
             timerInterval = setInterval(() => {
                 timeLeft--;
                 updateTimerInMenu();
@@ -196,8 +197,9 @@
 
         function stopWithFade() {
             if (gainNode) {
-                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 5);
-                setTimeout(() => { if (isPlaying) togglePlay(); }, 5000);
+                const fadeTime = 5;
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + fadeTime);
+                setTimeout(() => { if (isPlaying) togglePlay(); }, fadeTime * 1000);
             }
         }
 
@@ -206,22 +208,17 @@
             
             if (!isPlaying) {
                 if (audioCtx.state === 'suspended') audioCtx.resume();
-                
                 sourceNode = audioCtx.createBufferSource();
                 sourceNode.buffer = (modeSelect.value === 'pink') ? createPinkNoiseBuffer(audioCtx) : createRiverBuffer(audioCtx);
                 sourceNode.loop = true;
-
                 gainNode = audioCtx.createGain();
                 gainNode.gain.setValueAtTime(volSlider.value, audioCtx.currentTime);
-
                 sourceNode.connect(gainNode).connect(audioCtx.destination);
                 sourceNode.start();
-                
                 iconPath.setAttribute('d', "M6 19h4V5H6v14zm8-14v14h4V5h-4z");
                 btn.classList.add('playing');
                 waveContainer.classList.add('active');
                 isPlaying = true;
-                
                 startTimer(parseInt(timerSelect.value));
             } else {
                 if(sourceNode) try { sourceNode.stop(); } catch(e) {}
@@ -234,14 +231,10 @@
         }
 
         btn.addEventListener('click', togglePlay);
-        
-        // Si on change le minuteur pendant la lecture, on relance le chrono
         timerSelect.addEventListener('change', () => {
             if (isPlaying) startTimer(parseInt(timerSelect.value));
         });
-
         modeSelect.addEventListener('change', () => { if (isPlaying) { togglePlay(); togglePlay(); } });
-        
         volSlider.addEventListener('input', (e) => {
             const val = e.target.value;
             document.getElementById('volPerc').textContent = Math.round(val * 100) + "%";
