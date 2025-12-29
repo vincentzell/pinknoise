@@ -2,12 +2,11 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pink Noise Pro</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3659/3659898.png">
-
+    
     <style>
         :root {
             --bg: #0f172a;
@@ -15,99 +14,241 @@
             --primary: #38bdf8;
             --accent: #fb7185;
             --text: #f8fafc;
+            --wave-color: rgba(56, 189, 248, 0.4); /* Couleur pour les vagues */
         }
-        /* Mode sombre/clair automatique */
-        @media (prefers-color-scheme: light) {
-            :root {
-                --bg: #f1f5f9;
-                --card: #ffffff;
-                --primary: #0ea5e9;
-                --accent: #e11d48;
-                --text: #0f172a;
-            }
+
+        /* Reset pour éviter le scroll élastique sur mobile */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: fixed; /* Empêche le "pull-to-refresh" */
+            touch-action: manipulation; /* Améliore la réactivité tactile */
         }
 
         body { 
             font-family: system-ui, -apple-system, sans-serif; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            height: 100vh; margin: 0; background: var(--bg); color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg);
+            color: var(--text);
             transition: background 0.3s ease;
         }
 
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            position: relative; /* Pour positionner l'animation */
+            z-index: 1; /* Pour que la carte soit au-dessus des vagues */
+        }
+
         .card {
-            background: var(--card); padding: 2.5rem; border-radius: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2); text-align: center; width: 85%; max-width: 350px;
+            background: var(--card);
+            padding: clamp(1.5rem, 5vh, 3rem); /* Padding adaptatif selon la hauteur */
+            border-radius: 40px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        h1 { 
+            margin: 0; 
+            font-size: clamp(1.2rem, 4vw, 1.8rem); 
+        }
+
+        p { 
+            margin: 0; 
+            opacity: 0.6; 
+            font-size: clamp(0.8rem, 3vw, 1rem);
         }
 
         .btn-main { 
-            width: 90px; height: 90px; border-radius: 50%; border: none;
-            background: var(--primary); color: white; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            margin: 2rem auto; transition: transform 0.2s, background 0.3s;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            width: clamp(80px, 20vh, 120px);
+            height: clamp(80px, 20vh, 120px);
+            border-radius: 50%;
+            border: none;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem auto;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.2);
+            position: relative;
+            z-index: 10; /* Pour qu'il soit au-dessus de l'animation */
         }
-        .btn-main:active { transform: scale(0.9); }
-        .btn-main svg { width: 40px; height: 40px; fill: currentColor; }
-        .btn-main.playing { background: var(--accent); }
+
+        .btn-main svg { 
+            width: 40%; 
+            height: 40%; 
+            fill: currentColor; 
+        }
+
+        .btn-main.playing { 
+            background: var(--accent);
+            box-shadow: 0 10px 30px rgba(251, 113, 133, 0.2);
+            transform: scale(1.05);
+        }
+
+        .volume-container {
+            text-align: left;
+            margin-top: 1rem;
+        }
+
+        .volume-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
         input[type=range] { 
-            width: 100%; height: 8px; border-radius: 5px;
-            appearance: none; background: #cbd5e1; outline: none; margin-top: 1rem;
+            width: 100%;
+            height: 6px;
+            border-radius: 10px;
+            appearance: none;
+            background: rgba(255,255,255,0.1);
+            outline: none;
         }
+
         input[type=range]::-webkit-slider-thumb {
-            appearance: none; width: 20px; height: 20px; background: var(--primary);
-            border-radius: 50%; cursor: pointer;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid var(--card);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
 
         .status-badge {
-            margin-top: 1.5rem; padding: 5px 15px; border-radius: 20px;
-            font-size: 0.75rem; font-weight: bold; background: rgba(0,0,0,0.1);
+            font-size: 0.7rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 6px 16px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
             display: inline-block;
+            align-self: center;
+            color: var(--primary);
+        }
+
+        /* --- Animation des vagues --- */
+        .wave-animation-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none; /* Permet de cliquer à travers */
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+        }
+        .wave-animation-container.active {
+            opacity: 1;
+        }
+
+        .wave {
+            position: absolute;
+            border: 2px solid var(--wave-color);
+            border-radius: 50%;
+            opacity: 0;
+            animation: wave-grow 2s linear infinite;
+        }
+
+        /* Délai pour créer plusieurs vagues */
+        .wave:nth-child(1) { animation-delay: 0s; }
+        .wave:nth-child(2) { animation-delay: 0.5s; }
+        .wave:nth-child(3) { animation-delay: 1s; }
+        .wave:nth-child(4) { animation-delay: 1.5s; }
+
+        @keyframes wave-grow {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+            100% {
+                width: 400px; /* Taille maximale de la vague */
+                height: 400px;
+                opacity: 0;
+                transform: translate(-50%, -50%);
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h1 style="margin:0">Pink Noise</h1>
-        <p style="opacity: 0.7">Sommeil & Concentration</p>
-        
-        <button id="playBtn" class="btn-main">
-            <svg id="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        </button>
+    <div id="waveContainer" class="wave-animation-container">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
 
-        <div style="text-align: left;">
-            <label style="font-size: 0.8rem; font-weight: bold;">Volume</label>
-            <input type="range" id="volume" min="0" max="1" step="0.01" value="0.3">
+    <div class="container">
+        <div class="card">
+            <div>
+                <h1>Pink Noise Pro</h1>
+                <p>Ambiance apaisante</p>
+            </div>
+            
+            <button id="playBtn" class="btn-main" aria-label="Jouer ou Arrêter">
+                <svg id="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+
+            <div class="volume-container">
+                <div class="volume-header">
+                    <span>Volume</span>
+                    <span id="volPerc">30%</span>
+                </div>
+                <input type="range" id="volume" min="0" max="1" step="0.01" value="0.3">
+            </div>
+
+            <div id="status" class="status-badge">Prêt</div>
         </div>
-
-        <div id="status" class="status-badge">Prêt</div>
     </div>
 
     <script>
         let audioCtx, sourceNode, gainNode;
         let isPlaying = false;
-
         const btn = document.getElementById('playBtn');
         const iconPath = document.querySelector('#icon path');
         const volSlider = document.getElementById('volume');
+        const volPerc = document.getElementById('volPerc');
         const statusTxt = document.getElementById('status');
+        const waveContainer = document.getElementById('waveContainer'); // Référence au conteneur d'ondes
 
-        // Algorithme de filtrage pour obtenir la pente de -3dB/octave
         function createPinkNoiseBuffer(context) {
             const bufferSize = context.sampleRate * 2;
             const buffer = context.createBuffer(1, bufferSize, context.sampleRate);
             const data = buffer.getChannelData(0);
             let b0=0, b1=0, b2=0, b3=0, b4=0, b5=0, b6=0;
-            
             for (let i = 0; i < bufferSize; i++) {
                 let white = Math.random() * 2 - 1;
-                b0 = 0.99886 * b0 + white * 0.0555179;
-                b1 = 0.99332 * b1 + white * 0.0750759;
-                b2 = 0.96900 * b2 + white * 0.1538520;
-                b3 = 0.86650 * b3 + white * 0.3104856;
-                b4 = 0.55000 * b4 + white * 0.5329522;
-                b5 = -0.7616 * b5 - white * 0.0168980;
+                b0 = 0.99886 * b0 + white * 0.0555179; b1 = 0.99332 * b1 + white * 0.0750759;
+                b2 = 0.96900 * b2 + white * 0.1538520; b3 = 0.86650 * b3 + white * 0.3104856;
+                b4 = 0.55000 * b4 + white * 0.5329522; b5 = -0.7616 * b5 - white * 0.0168980;
                 data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.15;
                 b6 = white * 0.11592;
             }
@@ -116,45 +257,37 @@
 
         function togglePlay() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
             if (!isPlaying) {
                 if (audioCtx.state === 'suspended') audioCtx.resume();
-                
                 sourceNode = audioCtx.createBufferSource();
                 sourceNode.buffer = createPinkNoiseBuffer(audioCtx);
                 sourceNode.loop = true;
-
                 gainNode = audioCtx.createGain();
                 gainNode.gain.setValueAtTime(volSlider.value, audioCtx.currentTime);
-
                 sourceNode.connect(gainNode).connect(audioCtx.destination);
                 sourceNode.start();
-                
                 iconPath.setAttribute('d', "M6 19h4V5H6v14zm8-14v14h4V5h-4z");
                 btn.classList.add('playing');
                 statusTxt.textContent = "Lecture en cours";
+                waveContainer.classList.add('active'); // Active l'animation
                 isPlaying = true;
-
-                if ('mediaSession' in navigator) {
-                    navigator.mediaSession.metadata = new MediaMetadata({ title: 'Pink Noise' });
-                    navigator.mediaSession.playbackState = "playing";
-                }
             } else {
                 sourceNode.stop();
                 iconPath.setAttribute('d', "M8 5v14l11-7z");
                 btn.classList.remove('playing');
                 statusTxt.textContent = "Arrêté";
+                waveContainer.classList.remove('active'); // Désactive l'animation
                 isPlaying = false;
-                if ('mediaSession' in navigator) navigator.mediaSession.playbackState = "paused";
             }
         }
 
         btn.addEventListener('click', togglePlay);
         volSlider.addEventListener('input', (e) => {
-            if (gainNode) gainNode.gain.setTargetAtTime(e.target.value, audioCtx.currentTime, 0.05);
+            const val = e.target.value;
+            volPerc.textContent = Math.round(val * 100) + "%";
+            if (gainNode) gainNode.gain.setTargetAtTime(val, audioCtx.currentTime, 0.05);
         });
 
-        // Enregistrement du Service Worker (pour PWA)
         if ('serviceWorker' in navigator) {
             const swCode = "self.addEventListener('fetch', (e) => {});";
             const blob = new Blob([swCode], {type: 'text/javascript'});
