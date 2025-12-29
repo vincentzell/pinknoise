@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pink Noise Pro</title>
+    <title>Sleepy Bobby</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
     
@@ -14,18 +14,17 @@
             --primary: #38bdf8;
             --accent: #fb7185;
             --text: #f8fafc;
-            --wave-color: rgba(56, 189, 248, 0.4); /* Couleur pour les vagues */
+            --wave-color: rgba(56, 189, 248, 0.4);
         }
 
-        /* Reset pour éviter le scroll élastique sur mobile */
         html, body {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
             overflow: hidden;
-            position: fixed; /* Empêche le "pull-to-refresh" */
-            touch-action: manipulation; /* Améliore la réactivité tactile */
+            position: fixed;
+            touch-action: manipulation;
         }
 
         body { 
@@ -44,13 +43,13 @@
             padding: 20px;
             box-sizing: border-box;
             text-align: center;
-            position: relative; /* Pour positionner l'animation */
-            z-index: 1; /* Pour que la carte soit au-dessus des vagues */
+            position: relative;
+            z-index: 1;
         }
 
         .card {
             background: var(--card);
-            padding: clamp(1.5rem, 5vh, 3rem); /* Padding adaptatif selon la hauteur */
+            padding: clamp(1.5rem, 5vh, 3rem);
             border-radius: 40px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.3);
             display: flex;
@@ -61,7 +60,8 @@
 
         h1 { 
             margin: 0; 
-            font-size: clamp(1.2rem, 4vw, 1.8rem); 
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            letter-spacing: -0.5px;
         }
 
         p { 
@@ -85,7 +85,7 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 10px 30px rgba(56, 189, 248, 0.2);
             position: relative;
-            z-index: 10; /* Pour qu'il soit au-dessus de l'animation */
+            z-index: 10;
         }
 
         .btn-main svg { 
@@ -148,7 +148,7 @@
             color: var(--primary);
         }
 
-        /* --- Animation des vagues --- */
+        /* Animation des vagues */
         .wave-animation-container {
             position: absolute;
             top: 0;
@@ -159,7 +159,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            pointer-events: none; /* Permet de cliquer à travers */
+            pointer-events: none;
             opacity: 0;
             transition: opacity 0.5s ease-out;
         }
@@ -175,25 +175,14 @@
             animation: wave-grow 2s linear infinite;
         }
 
-        /* Délai pour créer plusieurs vagues */
         .wave:nth-child(1) { animation-delay: 0s; }
         .wave:nth-child(2) { animation-delay: 0.5s; }
         .wave:nth-child(3) { animation-delay: 1s; }
         .wave:nth-child(4) { animation-delay: 1.5s; }
 
         @keyframes wave-grow {
-            0% {
-                width: 0;
-                height: 0;
-                opacity: 1;
-                transform: translate(-50%, -50%);
-            }
-            100% {
-                width: 400px; /* Taille maximale de la vague */
-                height: 400px;
-                opacity: 0;
-                transform: translate(-50%, -50%);
-            }
+            0% { width: 0; height: 0; opacity: 1; transform: translate(-50%, -50%); }
+            100% { width: 450px; height: 450px; opacity: 0; transform: translate(-50%, -50%); }
         }
     </style>
 </head>
@@ -209,11 +198,11 @@
     <div class="container">
         <div class="card">
             <div>
-                <h1>Pink Noise Pro</h1>
-                <p>Ambiance apaisante</p>
+                <h1>Sleepy Bobby</h1>
+                <p>Bruit rose pour un dodo facile</p>
             </div>
             
-            <button id="playBtn" class="btn-main" aria-label="Jouer ou Arrêter">
+            <button id="playBtn" class="btn-main" aria-label="Lancer Sleepy Bobby">
                 <svg id="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </button>
 
@@ -225,7 +214,7 @@
                 <input type="range" id="volume" min="0" max="1" step="0.01" value="0.3">
             </div>
 
-            <div id="status" class="status-badge">Prêt</div>
+            <div id="status" class="status-badge">Bobby est prêt</div>
         </div>
     </div>
 
@@ -237,7 +226,7 @@
         const volSlider = document.getElementById('volume');
         const volPerc = document.getElementById('volPerc');
         const statusTxt = document.getElementById('status');
-        const waveContainer = document.getElementById('waveContainer'); // Référence au conteneur d'ondes
+        const waveContainer = document.getElementById('waveContainer');
 
         function createPinkNoiseBuffer(context) {
             const bufferSize = context.sampleRate * 2;
@@ -268,15 +257,15 @@
                 sourceNode.start();
                 iconPath.setAttribute('d', "M6 19h4V5H6v14zm8-14v14h4V5h-4z");
                 btn.classList.add('playing');
-                statusTxt.textContent = "Lecture en cours";
-                waveContainer.classList.add('active'); // Active l'animation
+                statusTxt.textContent = "Bobby murmure...";
+                waveContainer.classList.add('active');
                 isPlaying = true;
             } else {
                 sourceNode.stop();
                 iconPath.setAttribute('d', "M8 5v14l11-7z");
                 btn.classList.remove('playing');
-                statusTxt.textContent = "Arrêté";
-                waveContainer.classList.remove('active'); // Désactive l'animation
+                statusTxt.textContent = "Bobby dort";
+                waveContainer.classList.remove('active');
                 isPlaying = false;
             }
         }
