@@ -17,65 +17,63 @@
             --wave-color: rgba(56, 189, 248, 0.4);
         }
 
-        html, body {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            overflow: hidden; position: fixed; touch-action: manipulation;
-        }
-
+        html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; position: fixed; touch-action: manipulation; }
         body { 
             font-family: system-ui, -apple-system, sans-serif; 
             display: flex; align-items: center; justify-content: center;
-            background: var(--bg); color: var(--text); transition: background 0.3s ease;
+            background: var(--bg); color: var(--text);
         }
 
         .container { width: 100%; max-width: 400px; padding: 20px; box-sizing: border-box; text-align: center; position: relative; z-index: 1; }
 
         .card {
-            background: var(--card); padding: clamp(1.5rem, 5vh, 2.5rem);
+            background: var(--card); padding: clamp(1rem, 4vh, 2rem);
             border-radius: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            display: flex; flex-direction: column; gap: 1.2rem;
+            display: flex; flex-direction: column; gap: 1rem;
             border: 1px solid rgba(255,255,255,0.05);
         }
 
-        h1 { margin: 0; font-size: clamp(1.5rem, 5vw, 2rem); }
-        p { margin: 0; opacity: 0.6; font-size: 0.9rem; }
+        h1 { margin: 0; font-size: 1.8rem; }
+        p { margin: 0; opacity: 0.6; font-size: 0.85rem; }
 
         .btn-main { 
-            width: clamp(80px, 18vh, 110px); height: clamp(80px, 18vh, 110px);
-            border-radius: 50%; border: none; background: var(--primary); color: white;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            margin: 0.5rem auto; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.2); position: relative; z-index: 10;
+            width: 100px; height: 100px; border-radius: 50%; border: none;
+            background: var(--primary); color: white; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0.5rem auto; transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.2);
         }
-
         .btn-main.playing { background: var(--accent); transform: scale(1.05); }
-        .btn-main svg { width: 40%; height: 40%; fill: currentColor; }
+        .btn-main svg { width: 40px; height: 40px; fill: currentColor; }
 
-        .control-group { text-align: left; margin-top: 0.5rem; }
-        .label-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; opacity: 0.8; }
+        .control-group { text-align: left; }
+        .label-header { display: flex; justify-content: space-between; margin-bottom: 0.4rem; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; opacity: 0.7; }
 
         select {
-            width: 100%; padding: 12px; border-radius: 12px;
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            color: white; font-size: 1rem; outline: none; cursor: pointer; appearance: none;
+            width: 100%; padding: 10px; border-radius: 12px;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
+            color: white; font-size: 0.9rem; outline: none;
         }
 
         input[type=range] { width: 100%; height: 6px; border-radius: 10px; appearance: none; background: rgba(255,255,255,0.1); outline: none; }
-        input[type=range]::-webkit-slider-thumb { appearance: none; width: 22px; height: 22px; background: var(--primary); border-radius: 50%; border: 3px solid var(--card); }
+        input[type=range]::-webkit-slider-thumb { appearance: none; width: 20px; height: 20px; background: var(--primary); border-radius: 50%; border: 3px solid var(--card); }
 
+        #timerDisplay { font-size: 1.2rem; font-weight: bold; color: var(--accent); margin: 0.5rem 0; min-height: 1.5rem; }
+
+        /* Animation des vagues */
         .wave-animation-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             overflow: hidden; display: flex; align-items: center; justify-content: center;
-            pointer-events: none; opacity: 0; transition: opacity 0.5s ease-out;
+            pointer-events: none; opacity: 0; transition: opacity 0.5s ease;
         }
         .wave-animation-container.active { opacity: 1; }
-        .wave { position: absolute; border: 2px solid var(--wave-color); border-radius: 50%; opacity: 0; animation: wave-grow 2s linear infinite; }
-        .wave:nth-child(2) { animation-delay: 0.5s; }
-        .wave:nth-child(3) { animation-delay: 1s; }
+        .wave { position: absolute; border: 2px solid var(--wave-color); border-radius: 50%; opacity: 0; animation: wave-grow 2.5s linear infinite; }
+        .wave:nth-child(2) { animation-delay: 0.8s; }
+        .wave:nth-child(3) { animation-delay: 1.6s; }
 
         @keyframes wave-grow {
             0% { width: 0; height: 0; opacity: 1; transform: translate(-50%, -50%); }
-            100% { width: 450px; height: 450px; opacity: 0; transform: translate(-50%, -50%); }
+            100% { width: 500px; height: 500px; opacity: 0; transform: translate(-50%, -50%); }
         }
     </style>
 </head>
@@ -89,8 +87,10 @@
         <div class="card">
             <div>
                 <h1>Sleepy Bobby</h1>
-                <p id="subtext">Bobby murmure à ton oreille</p>
+                <p>Bobby murmure pour t'aider à dormir</p>
             </div>
+
+            <div id="timerDisplay"></div>
             
             <button id="playBtn" class="btn-main"><svg id="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
 
@@ -98,7 +98,17 @@
                 <div class="label-header">Ambiance</div>
                 <select id="modeSelect">
                     <option value="pink">Bruit Rose (Sédatif)</option>
-                    <option value="river">Rivière Apaisante</option>
+                    <option value="river">Rivière Douce</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <div class="label-header">Minuteur</div>
+                <select id="timerSelect">
+                    <option value="0">Infini (Sans minuteur)</option>
+                    <option value="15">15 Minutes</option>
+                    <option value="30">30 Minutes</option>
+                    <option value="60">1 Heure</option>
                 </select>
             </div>
 
@@ -112,30 +122,16 @@
     <script>
         let audioCtx, sourceNode, gainNode;
         let isPlaying = false;
+        let timerInterval;
+        let timeLeft = 0;
+
         const btn = document.getElementById('playBtn');
         const iconPath = document.querySelector('#icon path');
         const volSlider = document.getElementById('volume');
         const modeSelect = document.getElementById('modeSelect');
+        const timerSelect = document.getElementById('timerSelect');
+        const timerDisplay = document.getElementById('timerDisplay');
         const waveContainer = document.getElementById('waveContainer');
-
-        // URL d'un bruit de rivière libre de droits (boucle haute qualité)
-        const RIVER_URL = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"; // Note: Remplacer par un vrai son de rivière court si besoin
-
-        async function getRiverBuffer(context) {
-            // Pour l'exemple, on génère un son "eau" via un filtre passe-bas sur du bruit blanc
-            // C'est plus léger que de charger un MP3
-            const bufferSize = context.sampleRate * 4;
-            const buffer = context.createBuffer(1, bufferSize, context.sampleRate);
-            const data = buffer.getChannelData(0);
-            let lastOut = 0;
-            for (let i = 0; i < bufferSize; i++) {
-                const white = Math.random() * 2 - 1;
-                // Filtre résonant simple pour simuler l'eau
-                lastOut = 0.94 * lastOut + 0.06 * white;
-                data[i] = lastOut * 0.5;
-            }
-            return buffer;
-        }
 
         function createPinkNoiseBuffer(context) {
             const bufferSize = context.sampleRate * 2;
@@ -153,6 +149,51 @@
             return buffer;
         }
 
+        function createRiverBuffer(context) {
+            const bufferSize = context.sampleRate * 6;
+            const buffer = context.createBuffer(1, bufferSize, context.sampleRate);
+            const data = buffer.getChannelData(0);
+            let lp0 = 0, lp1 = 0;
+            for (let i = 0; i < bufferSize; i++) {
+                const white = Math.random() * 2 - 1;
+                lp0 = 0.99 * lp0 + 0.01 * white;
+                lp1 = 0.99 * lp1 + 0.01 * lp0;
+                const lfo = Math.sin(i * 0.00004) * 0.2 + 0.8; 
+                data[i] = lp1 * lfo * 0.5;
+            }
+            return buffer;
+        }
+
+        function startTimer(minutes) {
+            clearInterval(timerInterval);
+            if (minutes === 0) {
+                timerDisplay.textContent = "";
+                return;
+            }
+            timeLeft = minutes * 60;
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 0) {
+                    stopWithFade();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            timerDisplay.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function stopWithFade() {
+            if (gainNode) {
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 5);
+                setTimeout(() => { if (isPlaying) togglePlay(); }, 5000);
+            }
+        }
+
         async function togglePlay() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             
@@ -160,15 +201,12 @@
                 if (audioCtx.state === 'suspended') audioCtx.resume();
                 
                 sourceNode = audioCtx.createBufferSource();
-                if (modeSelect.value === 'pink') {
-                    sourceNode.buffer = createPinkNoiseBuffer(audioCtx);
-                } else {
-                    sourceNode.buffer = await getRiverBuffer(audioCtx);
-                }
-                
+                sourceNode.buffer = (modeSelect.value === 'pink') ? createPinkNoiseBuffer(audioCtx) : createRiverBuffer(audioCtx);
                 sourceNode.loop = true;
+
                 gainNode = audioCtx.createGain();
                 gainNode.gain.setValueAtTime(volSlider.value, audioCtx.currentTime);
+
                 sourceNode.connect(gainNode).connect(audioCtx.destination);
                 sourceNode.start();
                 
@@ -176,8 +214,12 @@
                 btn.classList.add('playing');
                 waveContainer.classList.add('active');
                 isPlaying = true;
+                
+                if (parseInt(timerSelect.value) > 0) startTimer(parseInt(timerSelect.value));
             } else {
-                sourceNode.stop();
+                if(sourceNode) sourceNode.stop();
+                clearInterval(timerInterval);
+                timerDisplay.textContent = "";
                 iconPath.setAttribute('d', "M8 5v14l11-7z");
                 btn.classList.remove('playing');
                 waveContainer.classList.remove('active');
@@ -185,16 +227,19 @@
             }
         }
 
-        modeSelect.addEventListener('change', () => {
-            if (isPlaying) { togglePlay(); togglePlay(); } // Redémarrer avec le nouveau son
-        });
-
         btn.addEventListener('click', togglePlay);
+        modeSelect.addEventListener('change', () => { if (isPlaying) { togglePlay(); togglePlay(); } });
         volSlider.addEventListener('input', (e) => {
             const val = e.target.value;
             document.getElementById('volPerc').textContent = Math.round(val * 100) + "%";
             if (gainNode) gainNode.gain.setTargetAtTime(val, audioCtx.currentTime, 0.05);
         });
+
+        if ('serviceWorker' in navigator) {
+            const swCode = "self.addEventListener('fetch', (e) => {});";
+            const blob = new Blob([swCode], {type: 'text/javascript'});
+            navigator.serviceWorker.register(URL.createObjectURL(blob));
+        }
     </script>
 </body>
 </html>
