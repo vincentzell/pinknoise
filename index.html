@@ -33,7 +33,7 @@
         .play-btn { width: 140px; height: 140px; border: none; background: none; cursor: pointer; position: relative; z-index: 60; display: flex; flex-direction: column; align-items: center; justify-content: center; outline: none; }
         
         .branch { position: absolute; width: 140px; height: 12px; background: var(--branch-brown); bottom: 35px; left: 50%; transform: translateX(-50%); border-radius: 10px; z-index: 100; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        .bird-body { width: 90px; height: 100px; background: var(--bird-grey); border-radius: 50% 50% 45% 45%; position: relative; overflow: hidden; z-index: 30; transition: transform 0.3s ease; }
+        .bird-body { width: 90px; height: 100px; background: var(--bird-grey); border-radius: 50% 50% 45% 45%; position: relative; overflow: hidden; z-index: 30; }
         .head-top { position: absolute; top: 0; left: 20%; width: 60%; height: 25px; background: var(--bird-dark-grey); border-radius: 0 0 15px 15px; }
         .chest { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); width: 70px; height: 70px; background: var(--bird-orange); border-radius: 50%; }
         .eyes { position: absolute; top: 35px; width: 45px; display: flex; justify-content: space-between; left: 50%; transform: translateX(-50%); }
@@ -66,6 +66,8 @@
         select { width: 100%; padding: 12px; border-radius: 12px; background: #2d3748; border: 1px solid rgba(255,255,255,0.1); color: white; appearance: none; cursor: pointer; font-size: 0.95rem; outline: none; }
         input[type=range] { width: 100%; height: 6px; appearance: none; background: rgba(255,255,255,0.1); border-radius: 5px; outline: none; }
         input[type=range]::-webkit-slider-thumb { appearance: none; width: 22px; height: 22px; background: var(--primary); border-radius: 50%; border: 3px solid var(--card); cursor: pointer; }
+        
+        #bobbyPhrase { min-height: 40px; line-height: 1.4; }
     </style>
 </head>
 <body>
@@ -80,7 +82,7 @@
     <div class="container" id="mainContainer">
         <div class="card">
             <h1 style="margin: 0 0 5px 0;">Sleepy Bobby</h1>
-            <p style="margin: 0 0 20px 0; opacity: 0.7;">Bobby murmure pour t'aider à dormir</p>
+            <p id="bobbyPhrase" style="margin: 0 0 20px 0; opacity: 0.7; font-size: 0.9rem;"></p>
             
             <div class="play-btn-wrapper">
                 <button id="playBtn" class="play-btn">
@@ -123,6 +125,25 @@
     </div>
 
     <script>
+        const phrases = [
+            "Bobby ébouriffe ses plumes pour te border.",
+            "Chut... Bobby troque son chant contre un doux murmure.",
+            "Un petit nid de sons pour une grande nuit de rêves.",
+            "Bobby ferme un œil... puis l'autre... avec toi.",
+            "Bobby says bonne nuit and wishes you sweet dreams.",
+            "Un battement d'ailes, un petit chirp, et hop au dodo !",
+            "Bobby is learning to snore in two languages.",
+            "Bobby range son bec sous son aile, c'est l'heure.",
+            "Le dernier rouge-gorge couché éteint la lune !",
+            "Bobby rêve de trèfles irlandais et de jardins français.",
+            "De Connemara à la Provence, Bobby te chante le sommeil.",
+            "A little piece of Ireland, un petit coin de France, et beaucoup de dodo.",
+            "Bobby has his head in the clouds, entre Dublin et Paris.",
+            "Slán abhaile... Bobby te souhaite un doux retour au pays des songes."
+        ];
+
+        document.getElementById('bobbyPhrase').textContent = phrases[Math.floor(Math.random() * phrases.length)];
+
         let audioCtx, sourceNode, gainNode, timerInterval, rippleInterval;
         let isPlaying = false;
         let fadeStarted = false;
@@ -200,7 +221,6 @@
                     const now = audioCtx.currentTime;
                     gainNode.gain.cancelScheduledValues(now);
                     gainNode.gain.setValueAtTime(gainNode.gain.value, now);
-                    // Rampe exponentielle pour une perception humaine plus fluide
                     gainNode.gain.exponentialRampToValueAtTime(0.001, now + timeLeft);
                 }
 
