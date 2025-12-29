@@ -1,14 +1,15 @@
 {
   "name": "Sleepy Bobby",
   "short_name": "Bobby",
-  "start_url": ".",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
-  "description": "Bobby murmure pour t'aider à dormir",
+  "description": "Bobby le rouge-gorge murmure pour t'aider à dormir.",
+  "lang": "fr-FR",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/528/528076.png",
+      "src": "icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
