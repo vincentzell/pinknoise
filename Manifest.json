@@ -1,0 +1,16 @@
+{
+  "name": "Pink Noise Pro",
+  "short_name": "PinkNoise",
+  "description": "Générateur de bruit rose pour le sommeil.",
+  "start_url": "pink_noise.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3659/3659898.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
