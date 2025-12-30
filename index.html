@@ -25,6 +25,9 @@
         html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; position: fixed; background: var(--bg); font-family: system-ui, sans-serif; }
         body { display: flex; align-items: center; justify-content: center; }
 
+        /* Calque d'animation au premier plan */
+        .anim-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 100; overflow: hidden; }
+        
         .container { width: 100%; max-width: 380px; padding: 20px; text-align: center; position: relative; z-index: 10; }
 
         .card {
@@ -38,39 +41,25 @@
         .play-btn { width: 140px; height: 140px; border: none; background: none; cursor: pointer; position: relative; z-index: 60; display: flex; flex-direction: column; align-items: center; justify-content: center; outline: none; }
         
         .branch { position: absolute; width: 140px; height: 12px; background: var(--branch-brown); bottom: 35px; left: 50%; transform: translateX(-50%); border-radius: 10px; z-index: 100; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        .bird-body { width: 90px; height: 100px; background: var(--bird-grey); border-radius: 50% 50% 45% 45%; position: relative; overflow: hidden; z-index: 30; transition: box-shadow 1s ease; }
-        .head-top { position: absolute; top: 0; left: 20%; width: 60%; height: 25px; background: var(--bird-dark-grey); border-radius: 0 0 15px 15px; }
-        .chest { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); width: 70px; height: 70px; background: var(--bird-orange); border-radius: 50%; transition: background 0.5s ease; }
+        .bird-body { width: 90px; height: 100px; background: var(--bird-grey); border-radius: 50% 50% 45% 45%; position: relative; overflow: hidden; z-index: 30; }
+        .chest { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); width: 70px; height: 70px; background: var(--bird-orange); border-radius: 50%; transition: background 0.3s; }
         .eyes { position: absolute; top: 35px; width: 45px; display: flex; justify-content: space-between; left: 50%; transform: translateX(-50%); }
-        .eye { width: 7px; height: 7px; background: #1a1a1a; border-radius: 50%; transition: all 0.3s ease; }
-        .beak { position: absolute; top: 42px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid #f1c40f; }
-        .legs { display: flex; justify-content: center; gap: 15px; position: absolute; bottom: 38px; z-index: 40; }
-        .leg { width: 8px; height: 12px; background: var(--bird-dark-grey); border-radius: 3px; }
-        .tail { width: 25px; height: 40px; background: var(--bird-grey); border-radius: 0 0 10px 10px; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); z-index: 10; }
-
+        .eye { width: 7px; height: 7px; background: #1a1a1a; border-radius: 50%; transition: all 0.3s; }
+        
         /* Animations */
         .play-btn.playing .bird-body { animation: breathe 4s ease-in-out infinite; }
         .play-btn.playing .eye { height: 2px; border-radius: 2px; margin-top: 3px; }
-        .playing-state .branch { animation: sway 4s ease-in-out infinite; }
         @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
-        @keyframes sway { 0%, 100% { transform: translateX(-50%) rotate(0deg); } 50% { transform: translateX(-50%) rotate(1.5deg); } }
 
-        /* Effet spécial Feu */
-        .glow-fire { box-shadow: 0 0 20px rgba(230, 90, 40, 0.6); }
-
-        /* --- TEXTE --- */
-        #bobbyPhrase { min-height: 48px; margin: 0 0 20px 0; opacity: 0.7; font-size: 0.9rem; line-height: 1.4; transition: opacity 0.4s ease, transform 0.4s ease; }
-        .phrase-fade { opacity: 0 !important; transform: translateY(5px); }
-
-        /* --- VISUELS --- */
-        .anim-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 5; overflow: hidden; }
+        /* Visuels Pluie/Rivière */
         .ripple { position: absolute; border: 2px solid var(--primary); border-radius: 50%; transform: translate(-50%, -50%); animation: rippleEffect 4s cubic-bezier(0, 0.3, 0.7, 1) forwards; opacity: 0; }
         @keyframes rippleEffect { 0% { width: 0; height: 0; opacity: 0.6; } 100% { width: 400px; height: 400px; opacity: 0; } }
-        
-        .rain-drop { position: absolute; background: var(--primary); width: 2px; height: 15px; opacity: 0.4; animation: fall 0.8s linear infinite; }
-        @keyframes fall { to { transform: translateY(100vh); } }
+        .rain-drop { position: absolute; background: white; width: 1px; height: 25px; opacity: 0.2; animation: fall 0.6s linear infinite; }
+        @keyframes fall { to { transform: translateY(110vh); } }
 
-        /* CONTROLES */
+        #bobbyPhrase { min-height: 48px; opacity: 0.7; font-size: 0.9rem; transition: all 0.4s; margin-bottom: 10px; }
+        .phrase-fade { opacity: 0; transform: translateY(5px); }
+
         .control-group { text-align: left; margin-top: 15px; }
         .label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; opacity: 0.5; margin-bottom: 5px; display: block; }
         select { width: 100%; padding: 12px; border-radius: 12px; background: #2d3748; border: 1px solid rgba(255,255,255,0.1); color: white; appearance: none; cursor: pointer; outline: none; }
@@ -82,20 +71,19 @@
 
     <div class="anim-container" id="animContainer"></div>
 
-    <div class="container" id="mainContainer">
+    <div class="container">
         <div class="card">
-            <h1 style="margin: 0 0 5px 0;">Sleepy Bobby</h1>
+            <h1 style="margin:0;">Sleepy Bobby</h1>
             <p id="bobbyPhrase"></p>
             
             <div class="play-btn-wrapper">
                 <button id="playBtn" class="play-btn">
-                    <div class="bird-body" id="bobbyBody">
-                        <div class="head-top"></div><div class="chest" id="bobbyChest"></div>
+                    <div class="bird-body">
+                        <div class="head-top" style="position:absolute;top:0;left:20%;width:60%;height:25px;background:var(--bird-dark-grey);border-radius:0 0 15px 15px;"></div>
+                        <div class="chest" id="bobbyChest"></div>
                         <div class="eyes"><div class="eye"></div><div class="eye"></div></div>
-                        <div class="beak"></div>
+                        <div class="beak" style="position:absolute;top:42px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid #f1c40f;"></div>
                     </div>
-                    <div class="legs"><div class="leg"></div><div class="leg"></div></div>
-                    <div class="tail"></div>
                     <div class="branch"></div>
                 </button>
             </div>
@@ -103,20 +91,24 @@
             <div class="control-group">
                 <span class="label">Ambiance</span>
                 <select id="modeSelect">
+                    <option value="pink">Bruit Rose (Sommeil profond)</option>
                     <option value="river">Rivière Douce</option>
                     <option value="rain">Pluie (Dublin Rain)</option>
                     <option value="wind">Vent (Pins Landais)</option>
                     <option value="fire">Cheminée (Irish Cottage)</option>
-                    <option value="space">Espace (Head in Clouds)</option>
+                    <option value="space">Espace (Zen)</option>
                 </select>
             </div>
             
             <div class="control-group">
                 <span class="label">Minuteur</span>
                 <select id="timerSelect">
-                    <option value="0" data-label="∞">∞</option>
+                    <option value="0" data-label="Sans limite">∞</option>
+                    <option value="5" data-label="5 Minutes">5 Minutes</option>
                     <option value="10" data-label="10 Minutes">10 Minutes</option>
+                    <option value="15" data-label="15 Minutes">15 Minutes</option>
                     <option value="30" data-label="30 Minutes">30 Minutes</option>
+                    <option value="60" data-label="60 Minutes">60 Minutes</option>
                 </select>
             </div>
 
@@ -137,11 +129,14 @@
             "Bobby has his head in the clouds, entre Dublin et Paris."
         ];
 
+        let audioCtx, gainNode, sourceNode, visualInterval, timerInterval;
+        let isPlaying = false;
+        let fadeStarted = false;
+
         const phraseElement = document.getElementById('bobbyPhrase');
         const animContainer = document.getElementById('animContainer');
-        const bobbyBody = document.getElementById('bobbyBody');
-        const bobbyChest = document.getElementById('bobbyChest');
-        
+        const timerSelect = document.getElementById('timerSelect');
+
         function updatePhrase() {
             phraseElement.classList.add('phrase-fade');
             setTimeout(() => {
@@ -151,59 +146,84 @@
         }
         updatePhrase();
 
-        let audioCtx, gainNode, sourceNode, visualInterval;
-        let isPlaying = false;
-
-        // --- GÉNÉRATEURS DE SON ---
-        function createNoiseBuffer(ctx, type) {
-            const bufSize = ctx.sampleRate * 2;
-            const buffer = ctx.createBuffer(1, bufSize, ctx.sampleRate);
-            const data = buffer.getChannelData(0);
-            let lastOut = 0;
+        function createAudioBuffer(type) {
+            const bufSize = audioCtx.sampleRate * 4;
+            const buffer = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+            const d = buffer.getChannelData(0);
+            let b0=0, b1=0, b2=0, b3=0, b4=0;
 
             for (let i = 0; i < bufSize; i++) {
-                const white = Math.random() * 2 - 1;
-                if (type === 'pink') { // Utilisé pour pluie/vent
-                    lastOut = (lastOut + (0.02 * white)) / 1.02;
-                    data[i] = lastOut * 3.5;
-                } else if (type === 'brown') { // Utilisé pour espace/feu
-                    lastOut = (lastOut + (0.01 * white)) / 1.01;
-                    data[i] = lastOut * 8;
+                let white = Math.random() * 2 - 1;
+                if (type === 'pink') {
+                    b0 = 0.99886*b0+white*0.0555; b1 = 0.99332*b1+white*0.0750; b2 = 0.969*b2+white*0.1538;
+                    d[i] = (b0+b1+b2+white*0.53) * 0.15;
+                } else if (type === 'river') {
+                    b0 = 0.95*b0 + 0.05*white;
+                    d[i] = b0 * (Math.sin(i * 0.0001) * 0.3 + 0.7) * 2;
+                } else if (type === 'fire') {
+                    d[i] = (Math.random() > 0.9985) ? (Math.random() * 0.6) : (white * 0.04);
+                } else {
+                    d[i] = white * 0.3;
                 }
             }
             return buffer;
         }
 
         function startAudio() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             sourceNode = audioCtx.createBufferSource();
             const mode = document.getElementById('modeSelect').value;
-            
-            // Configuration du son selon le mode
-            if (mode === 'river' || mode === 'rain') sourceNode.buffer = createNoiseBuffer(audioCtx, 'pink');
-            else sourceNode.buffer = createNoiseBuffer(audioCtx, 'brown');
-            
+            sourceNode.buffer = createAudioBuffer(mode);
             sourceNode.loop = true;
-            gainNode = audioCtx.createGain();
-            gainNode.gain.value = document.getElementById('volume').value;
-            
-            // Filtre pour adoucir le son
+
             const filter = audioCtx.createBiquadFilter();
             filter.type = "lowpass";
-            filter.frequency.value = mode === 'space' ? 300 : 800;
+            if (mode === 'rain') filter.frequency.value = 1300;
+            else if (mode === 'wind') filter.frequency.value = 350;
+            else if (mode === 'space') filter.frequency.value = 150;
+            else filter.frequency.value = 3000;
 
+            gainNode = audioCtx.createGain();
+            gainNode.gain.value = document.getElementById('volume').value;
             sourceNode.connect(filter).connect(gainNode).connect(audioCtx.destination);
             sourceNode.start();
         }
 
-        // --- VISUELS DYNAMIQUES ---
+        function startTimer(minutes) {
+            clearInterval(timerInterval);
+            fadeStarted = false;
+            if (minutes === 0) return;
+            let timeLeft = minutes * 60;
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const opt = timerSelect.options[timerSelect.selectedIndex];
+                const m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+                opt.textContent = `⏳ ${m}:${s.toString().padStart(2, '0')}`;
+
+                if (timeLeft <= 30 && !fadeStarted && gainNode) {
+                    fadeStarted = true;
+                    const now = audioCtx.currentTime;
+                    gainNode.gain.cancelScheduledValues(now);
+                    gainNode.gain.setValueAtTime(gainNode.gain.value, now);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, now + timeLeft);
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    if (isPlaying) togglePlay();
+                }
+            }, 1000);
+        }
+
+        function resetTimerLabels() {
+            clearInterval(timerInterval);
+            Array.from(timerSelect.options).forEach(opt => opt.textContent = opt.getAttribute('data-label'));
+        }
+
         function updateVisuals() {
             animContainer.innerHTML = '';
             clearInterval(visualInterval);
-            bobbyBody.classList.remove('glow-fire');
-            
             if (!isPlaying) return;
             const mode = document.getElementById('modeSelect').value;
 
@@ -211,50 +231,42 @@
                 visualInterval = setInterval(() => {
                     const r = document.createElement('div');
                     r.className = 'ripple';
-                    r.style.left = (40 + Math.random() * 20) + '%';
-                    r.style.top = (40 + Math.random() * 20) + '%';
+                    r.style.left = (Math.random() * 100) + '%';
+                    r.style.top = (Math.random() * 100) + '%';
                     animContainer.appendChild(r);
                     setTimeout(() => r.remove(), 4000);
-                }, 1500);
+                }, 1200);
             } else if (mode === 'rain') {
-                visualInterval = setInterval(() => {
+                for(let i=0; i<40; i++) {
                     const d = document.createElement('div');
                     d.className = 'rain-drop';
                     d.style.left = Math.random() * 100 + '%';
-                    d.style.animationDuration = (0.5 + Math.random() * 0.5) + 's';
+                    d.style.animationDelay = Math.random() * 2 + 's';
                     animContainer.appendChild(d);
-                    setTimeout(() => d.remove(), 1000);
-                }, 50);
-            } else if (mode === 'fire') {
-                bobbyBody.classList.add('glow-fire');
-                visualInterval = setInterval(() => {
-                    const flicker = 0.8 + Math.random() * 0.4;
-                    bobbyChest.style.background = `rgba(230, 90, 40, ${flicker})`;
-                }, 100);
+                }
             }
         }
 
-        async function togglePlay() {
+        function togglePlay() {
             if (!isPlaying) {
+                isPlaying = true;
                 updatePhrase();
                 startAudio();
+                startTimer(parseInt(timerSelect.value));
                 document.getElementById('playBtn').classList.add('playing');
-                document.getElementById('mainContainer').classList.add('playing-state');
-                isPlaying = true;
             } else {
-                if(sourceNode) sourceNode.stop();
-                document.getElementById('playBtn').classList.remove('playing');
-                document.getElementById('mainContainer').classList.remove('playing-state');
                 isPlaying = false;
+                if(sourceNode) { try { sourceNode.stop(); } catch(e){} }
+                resetTimerLabels();
+                document.getElementById('playBtn').classList.remove('playing');
             }
             updateVisuals();
         }
 
         document.getElementById('playBtn').addEventListener('click', togglePlay);
-        document.getElementById('modeSelect').addEventListener('change', () => { if(isPlaying) { togglePlay(); togglePlay(); } });
         document.getElementById('volume').addEventListener('input', (e) => {
             document.getElementById('volPerc').textContent = Math.round(e.target.value * 100) + "%";
-            if(gainNode) gainNode.gain.setTargetAtTime(e.target.value, audioCtx.currentTime, 0.1);
+            if(gainNode && !fadeStarted) gainNode.gain.setTargetAtTime(e.target.value, audioCtx.currentTime, 0.1);
         });
     </script>
 </body>
