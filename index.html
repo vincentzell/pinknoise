@@ -49,7 +49,7 @@
         @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
         .rain-drop { position: absolute; background: rgba(255,255,255,0.3); width: 1px; height: 30px; animation: fall 0.8s linear infinite; }
         @keyframes fall { to { transform: translateY(110vh); } }
-        /* NOUVEAU : RIPPLES RIVIÈRE */
+        
         .ripple { position: absolute; border: 2px solid var(--primary); border-radius: 50%; transform: translate(-50%, -50%); animation: rippleEffect 4s cubic-bezier(0, 0.3, 0.7, 1) forwards; opacity: 0; }
         @keyframes rippleEffect { 0% { width: 0; height: 0; opacity: 0.5; } 100% { width: 500px; height: 500px; opacity: 0; } }
 
@@ -83,8 +83,8 @@
             <div class="control-group">
                 <div class="label-row"><span>Ambiance</span></div>
                 <select id="modeSelect">
+                    <option value="river" selected>Rivière</option>
                     <option value="pink">Bruit Rose</option>
-                    <option value="river">Rivière Douce</option>
                     <option value="waves">Vagues</option>
                     <option value="rain">Pluie</option>
                     <option value="wind">Vent</option>
@@ -296,7 +296,7 @@
                     let r = document.createElement('div'); r.className = 'ripple';
                     r.style.left = (30 + Math.random() * 40) + '%';
                     r.style.top = (40 + Math.random() * 20) + '%';
-                    backAnim.appendChild(r);
+                    frontAnim.appendChild(r);
                     setTimeout(() => r.remove(), 4000);
                 } else if (mode === 'wind') {
                     bobby.classList.add('sway-active');
